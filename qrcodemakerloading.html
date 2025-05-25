@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR 코드 생성기</title>
+    <!-- QR 코드 라이브러리 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <!-- 스타일 -->
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f5f7fa;
+            font-family: 'Noto Sans KR', sans-serif;
+            color: #333;
+        }
+        .qr-container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+        }
+        .qr-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #4a6cf7;
+        }
+        .qr-input-group {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .qr-input {
+            flex: 1 1 auto;
+            min-width: 200px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .qr-button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            background-color: #4a6cf7;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .qr-button:hover {
+            background-color: #3951b3;
+        }
+        .qr-error {
+            color: #e74c3c;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            min-height: 1.2em;
+        }
+        .qr-canvas-container {
+            margin-top: 20px;
+        }
+        canvas {
+            border: 1px solid #eee;
+            display: none;
+        }
+        .qr-description {
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        /* 로딩 스피너 스타일 */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4a6cf7;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="qr-container">
+        <h1 class="qr-title">QR 코드 생성기</h1>
+        <div class="qr-input-group">
+            <input type="text" id="text" class="qr-input" placeholder="텍스트 또는 URL 입력">
+            <button id="generateBtn" class="qr-button">생성</button>
+        </div>
+        <p id="error-message" class="qr-error"></p>
+        <div class="spinner" id="spinner"></div>
+        <div class="qr-canvas-container">
+            <canvas id="qrcode"></canvas>
+        </div>
+        <p class="qr-description">생성된 QR 코드를 마우스 오른쪽 버튼으로 저장하세요.</p>
+    </div>
+
+    <script>
+        (function() {
+            const generateBtn = document.getElementById('generateBtn');
+            const errorEl = document.getElementById('error-message');
+            const spinner = document.getElementById('spinner');
+            const canvas = document.getElementById('qrcode');
+            const ctx = canvas.getContext('2d');
+
+            function showError(message) {
+                errorEl.textContent = message;
+                spinner.style.display = 'none';
+                canvas.style.display = 'none';
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                generateBtn.disabled = false;
+            }
+
+            async function generateQR() {
+                errorEl.textContent = '';
+                const text = document.getElementById('text').value.trim();
+
+                if (!text) {
+                    showError('텍스트를 입력해주세요.');
+                    return;
+                }
+
+                // 로딩 스피너 표시
+                spinner.style.display = 'block';
+                canvas.style.display = 'none';
+                generateBtn.disabled = true;
+
+                // 1초 지연 후 QR 생성
+                setTimeout(async () => {
+                    try {
+                        await QRCode.toCanvas(canvas, text, { width: 256 });
+                        spinner.style.display = 'none';
+                        canvas.style.display = 'block';
+                        generateBtn.disabled = false;
+                    } catch (err) {
+                        console.error(err);
+                        const msg = err && err.message ? err.message : '';
+                        if (msg.includes('too big') || msg.includes('overflow')) {
+                            showError('데이터가 너무 커서 QR 코드를 생성할 수 없습니다. 입력을 줄이거나 URL 단축 서비스를 이용하세요.');
+                        } else {
+                            showError('QR 코드 생성 중 오류가 발생했습니다. ' + msg);
+                        }
+                    }
+                }, 1000);
+            }
+
+            generateBtn.addEventListener('click', generateQR);
+            document.getElementById('text').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') generateQR();
+            });
+        })();
+    </script>
+</body>
+</html>
