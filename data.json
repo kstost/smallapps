@@ -1,0 +1,12 @@
+[
+  { "name": "Mount Everest", "local": "에베레스트", "height": "8,848.86m", "location": "네팔/중국 국경" },
+  { "name": "K2 (Mount Godwin-Austen)", "local": "K2", "height": "8,611m", "location": "파키스탄/중국 국경" },
+  { "name": "Kangchenjunga", "local": "칸첸중가", "height": "8,586m", "location": "네팔/인도 국경" },
+  { "name": "Lhotse", "local": "로체", "height": "8,516m", "location": "네팔/중국 국경" },
+  { "name": "Makalu", "local": "마칼루", "height": "8,485m", "location": "네팔/중국 국경" },
+  { "name": "Cho Oyu", "local": "초오유", "height": "8,188m", "location": "네팔/중국 국경" },
+  { "name": "Dhaulagiri", "local": "다울라기리", "height": "8,167m", "location": "네팔" },
+  { "name": "Manaslu", "local": "마나슬루", "height": "8,163m", "location": "네팔" },
+  { "name": "Nanga Parbat", "local": "낸가파르바트", "height": "8,126m", "location": "파키스탄" },
+  { "name": "Annapurna I", "local": "안나푸르나 I", "height": "8,091m", "location": "네팔" }
+]
